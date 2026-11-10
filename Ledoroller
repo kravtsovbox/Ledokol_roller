@@ -1,0 +1,731 @@
+<!doctype html>
+<html lang="ru" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ЛЕДОКОЛ — дашборд проекта</title>
+<style>
+  :root{
+    --bg:#f5f7fa; --card:#ffffff; --ink:#111820; --muted:#5c6875; --line:#e1e6ec;
+    --accent:#0b63d6; --accent-soft:#e7f0ff; --warm:#e2522c; --ok:#12864e; --warn:#a86a00;
+    --radius:14px; --shadow:0 1px 2px rgba(16,24,40,.04), 0 6px 18px rgba(16,24,40,.05);
+  }
+  [data-theme="dark"]{
+    --bg:#0d1116; --card:#161c23; --ink:#e9eef4; --muted:#9aa8b6; --line:#242d37;
+    --accent:#4b93ff; --accent-soft:#17253a; --warm:#ff7a55; --ok:#3ddc97; --warn:#f0b429;
+    --shadow:0 1px 2px rgba(0,0,0,.4), 0 6px 18px rgba(0,0,0,.35);
+  }
+  *{box-sizing:border-box}
+  html{-webkit-text-size-adjust:100%}
+  body{
+    margin:0; background:var(--bg); color:var(--ink);
+    font:16px/1.55 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
+    padding-bottom:40px;
+  }
+  .wrap{max-width:780px;margin:0 auto;padding:0 16px}
+
+  /* ---------- HERO ---------- */
+  .hero{
+    background:linear-gradient(160deg,#0a2a5e 0%,#0b63d6 58%,#1f8fe0 100%);
+    color:#fff; padding:26px 0 22px;
+  }
+  .brand-line{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+  .brand-mark{
+    width:40px;height:40px;border-radius:12px;background:rgba(255,255,255,.16);
+    display:grid;place-items:center;font-size:20px;border:1px solid rgba(255,255,255,.3)
+  }
+  h1{margin:0;font-size:26px;letter-spacing:.5px;line-height:1.15}
+  .slogan{margin:10px 0 0;font-size:15px;color:#dbe9ff}
+  .hero-tags{display:flex;flex-wrap:wrap;gap:7px;margin-top:14px}
+  .hero-tags span{
+    font-size:13px;padding:5px 11px;border-radius:999px;
+    background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.26);
+  }
+  .theme-btn{
+    margin-left:auto;background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.3);
+    color:#fff;border-radius:999px;padding:7px 13px;font-size:14px;cursor:pointer;
+  }
+
+  /* ---------- KPI ---------- */
+  .kpi-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-top:18px}
+  .kpi{background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.22);border-radius:12px;padding:12px}
+  .kpi b{display:block;font-size:19px;line-height:1.25;letter-spacing:-.2px}
+  .kpi small{display:block;font-size:12.5px;color:#d6e6ff;margin-top:4px;line-height:1.35}
+
+  /* ---------- NAV ---------- */
+  nav.tabs{
+    position:sticky; top:0; z-index:20;
+    background:color-mix(in srgb, var(--bg) 88%, transparent);
+    backdrop-filter:saturate(160%) blur(10px);
+    border-bottom:1px solid var(--line);
+    display:flex; gap:8px; overflow-x:auto; padding:10px 16px;
+    scrollbar-width:none;
+  }
+  nav.tabs::-webkit-scrollbar{display:none}
+  nav.tabs a{
+    white-space:nowrap;text-decoration:none;font-size:14px;font-weight:600;
+    color:var(--ink);background:var(--card);border:1px solid var(--line);
+    padding:8px 13px;border-radius:999px;transition:.15s;
+  }
+  nav.tabs a.active{background:var(--accent);border-color:var(--accent);color:#fff}
+
+  /* ---------- SECTIONS ---------- */
+  section{scroll-margin-top:76px;margin-top:30px}
+  h2{
+    font-size:21px;margin:0 0 12px;line-height:1.25;letter-spacing:-.3px;
+    display:flex;align-items:baseline;gap:9px;
+  }
+  h2 .num{
+    font-size:13px;font-weight:700;color:var(--accent);background:var(--accent-soft);
+    border-radius:7px;padding:3px 8px;flex:none;
+  }
+  h3{font-size:16.5px;margin:0 0 8px;line-height:1.3}
+
+  .card{
+    background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+    padding:16px;margin-bottom:12px;box-shadow:var(--shadow);
+  }
+  .card p{margin:0 0 10px}
+  .card p:last-child{margin-bottom:0}
+  .muted{color:var(--muted)}
+  .small{font-size:14px}
+  strong{font-weight:700}
+
+  .tag{
+    display:inline-block;font-size:12px;font-weight:700;padding:3px 9px;border-radius:999px;
+    background:var(--accent-soft);color:var(--accent);border:1px solid transparent;
+  }
+  .tag.later{background:transparent;color:var(--muted);border-color:var(--line)}
+  .tag.warm{background:rgba(226,82,44,.12);color:var(--warm)}
+
+  ul.clean{margin:0;padding:0;list-style:none}
+  ul.clean li{position:relative;padding-left:20px;margin-bottom:8px}
+  ul.clean li:last-child{margin-bottom:0}
+  ul.clean li::before{
+    content:"";position:absolute;left:4px;top:9px;width:6px;height:6px;border-radius:50%;
+    background:var(--accent);
+  }
+
+  /* ---------- SERVICE CARDS ---------- */
+  .svc{display:flex;gap:12px;align-items:flex-start}
+  .svc .idx{
+    flex:none;width:30px;height:30px;border-radius:9px;background:var(--accent-soft);
+    color:var(--accent);font-weight:800;font-size:14px;display:grid;place-items:center;
+  }
+  .svc .body{flex:1;min-width:0}
+  .svc h3{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-bottom:6px}
+
+  /* ---------- DETAILS / STEPS ---------- */
+  details.step{
+    background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+    padding:0 16px;margin-bottom:10px;box-shadow:var(--shadow);
+  }
+  details.step>summary{
+    list-style:none;cursor:pointer;padding:15px 0;display:flex;gap:11px;align-items:flex-start;
+    font-weight:700;font-size:16px;line-height:1.35;
+  }
+  details.step>summary::-webkit-details-marker{display:none}
+  details.step>summary .idx{
+    flex:none;width:26px;height:26px;border-radius:8px;background:var(--accent);color:#fff;
+    font-size:13px;display:grid;place-items:center;font-weight:800;margin-top:-1px;
+  }
+  details.step>summary .chev{margin-left:auto;color:var(--muted);font-size:19px;line-height:1;flex:none;transition:.2s}
+  details[open]>summary .chev{transform:rotate(45deg)}
+  details.step .inner{padding:0 0 16px}
+  details.step .inner p{margin:0 0 10px}
+  details.step .inner p:last-child{margin-bottom:0}
+
+  /* ---------- BUDGET / OPEX ITEMS ---------- */
+  .item{padding:13px 0;border-bottom:1px dashed var(--line)}
+  .item:last-child{border-bottom:0}
+  .item-head{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;align-items:baseline}
+  .item-name{font-weight:700;font-size:15.5px}
+  .item-val{font-variant-numeric:tabular-nums;font-weight:700;font-size:15px;color:var(--accent)}
+  .bar{height:8px;background:var(--line);border-radius:999px;margin:9px 0 8px;position:relative;overflow:hidden}
+  .bar .fill{
+    position:absolute;top:0;bottom:0;border-radius:999px;
+    background:linear-gradient(90deg,var(--accent),#37a2ff);
+  }
+  .note{font-size:14px;color:var(--muted);margin:0;line-height:1.5}
+  .total{
+    background:var(--accent-soft);border:1px solid color-mix(in srgb,var(--accent) 30%, transparent);
+    border-radius:var(--radius);padding:15px 16px;margin-top:12px;
+  }
+  .total .row{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;align-items:baseline}
+  .total .row b{font-size:18px}
+  .total .sum{font-size:18px;font-weight:800;color:var(--accent);font-variant-numeric:tabular-nums}
+
+  /* ---------- SCENARIOS ---------- */
+  .scn{border-left:4px solid var(--line);padding-left:13px;margin-bottom:14px}
+  .scn:last-child{margin-bottom:0}
+  .scn.pess{border-color:var(--warm)}
+  .scn.base{border-color:var(--accent)}
+  .scn.opt{border-color:var(--ok)}
+  .scn .title{font-weight:800;font-size:15.5px;margin-bottom:6px}
+  .scn dl{display:grid;grid-template-columns:1fr auto;gap:5px 12px;margin:0;font-size:15px}
+  .scn dt{color:var(--muted)}
+  .scn dd{margin:0;font-weight:700;text-align:right;font-variant-numeric:tabular-nums}
+  .res-neg{color:var(--warm)}
+  .res-pos{color:var(--ok)}
+
+  /* ---------- CHECKLIST ---------- */
+  .check{display:flex;gap:11px;align-items:flex-start;padding:11px 0;border-bottom:1px dashed var(--line)}
+  .check:last-child{border-bottom:0}
+  .check input{appearance:none;flex:none;width:22px;height:22px;border:2px solid var(--line);border-radius:7px;margin:1px 0 0;cursor:pointer;position:relative;background:var(--card)}
+  .check input:checked{background:var(--ok);border-color:var(--ok)}
+  .check input:checked::after{content:"✓";position:absolute;inset:0;display:grid;place-items:center;color:#fff;font-size:14px;font-weight:900}
+  .check span{font-size:15px;line-height:1.45}
+  .check input:checked + span{text-decoration:line-through;color:var(--muted)}
+
+  footer{margin-top:34px;padding-top:16px;border-top:1px solid var(--line);font-size:13.5px;color:var(--muted);line-height:1.55}
+
+  @media (max-width:400px){
+    .kpi-grid{grid-template-columns:1fr}
+    h1{font-size:23px}
+  }
+  @media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+</style>
+</head>
+<body>
+
+<!-- ================= HERO ================= -->
+<header class="hero">
+  <div class="wrap">
+    <div class="brand-line">
+      <div class="brand-mark">❄</div>
+      <h1>ЛЕДОКОЛ</h1>
+      <button class="theme-btn" id="themeBtn" type="button" aria-label="Переключить тему">Тема</button>
+    </div>
+    <p class="slogan">«Ломай лёд — катайся круглый год». Крытый экстрим-парк роликов, скейтов и самокатов в Ханты-Мансийске.</p>
+    <div class="hero-tags">
+      <span>Этап 1 · компактный старт</span>
+      <span>250–300 м²</span>
+      <span>Потолки ≥ 4 м</span>
+      <span>Круглогодично</span>
+    </div>
+
+    <div class="kpi-grid">
+      <div class="kpi"><b>1,55–3,42 млн ₽</b><small>Стартовые вложения (без оборудования — оно уже куплено)</small></div>
+      <div class="kpi"><b>540–930 тыс ₽</b><small>Операционные расходы в месяц</small></div>
+      <div class="kpi"><b>≈ 700 тыс ₽/мес</b><small>Точка безубыточности при базовой аренде</small></div>
+      <div class="kpi"><b>0 ₽</b><small>Затраты на рампы, горки, ролики, самокаты, защиту</small></div>
+    </div>
+  </div>
+</header>
+
+<!-- ================= NAV ================= -->
+<nav class="tabs" aria-label="Разделы дашборда">
+  <a href="#start">Старт</a>
+  <a href="#concept">Концепция</a>
+  <a href="#services">Услуги</a>
+  <a href="#launch">Запуск</a>
+  <a href="#budget">Бюджет</a>
+  <a href="#opex">Операционка</a>
+  <a href="#revenue">Выручка</a>
+  <a href="#risks">Риски</a>
+  <a href="#growth">Расширение</a>
+  <a href="#next">Чек-лист</a>
+</nav>
+
+<main class="wrap">
+
+  <!-- ================= СТАРТ ================= -->
+  <section id="start">
+    <h2><span class="num">00</span> Что уже есть на входе</h2>
+
+    <div class="card">
+      <h3>Готовые активы проекта</h3>
+      <ul class="clean">
+        <li><strong>Оборудование куплено у клуба в Нягани:</strong> горки, рампы, большое количество роликов, самокатов и защиты. Это снимает главную стартовую статью расходов — на первом этапе новое оборудование почти не требуется.</li>
+        <li><strong>Оформленная федерация</strong> по горным лыжам и роликовым конькам — юридическая и репутационная основа для секций, соревнований и работы с родителями.</li>
+        <li><strong>Сильный штат инструкторов</strong> по горным лыжам и роликам.</li>
+        <li><strong>Опыт занятий с детьми</strong> — то, что нельзя купить за деньги и что сложно быстро скопировать конкурентам.</li>
+      </ul>
+    </div>
+
+    <div class="card">
+      <h3>Главный вывод анализа</h3>
+      <p>Проект конкурирует не «рампой», а <strong>системой</strong>: тренер, секция, разряд, соревнование, праздник. Оборудование у конкурента может быть похожим, а связка «федерация + инструкторы + детская траектория» — нет.</p>
+      <p class="muted small">В Ханты-Мансийске уже работает крытый скейтпарк на базе культурно-спортивного кластера «СпортЗавод» — это прямой конкурент, и позиционирование нужно строить от него в сторону.</p>
+    </div>
+  </section>
+
+  <!-- ================= КОНЦЕПЦИЯ ================= -->
+  <section id="concept">
+    <h2><span class="num">01</span> Бренд и концепция</h2>
+
+    <div class="card">
+      <h3>Название и слоган</h3>
+      <p><strong>«ЛЕДОКОЛ»</strong> — «Ломай лёд — катайся круглый год».</p>
+      <p>Название отсылает к северному характеру, преодолению и движению, а не к «холоду». Визуально бренд может быть тёплым и контрастным — акцент на движении, свете и цвете, чтобы не считываться как «ледяная секция».</p>
+    </div>
+
+    <div class="card">
+      <h3>Суть концепции</h3>
+      <p>«Ледокол» — это не просто прокат рамп, а <strong>северная база экстремального катания</strong>, где круглогодично учат, тренируют, проводят праздники и растят спортсменов.</p>
+      <p>В отличие от универсального формата «пришёл — покатался», ядро бренда — <strong>прогрессия райдера</strong>: от первого шага на роликах или самокате до соревновательного уровня через систему секций и федерацию.</p>
+    </div>
+
+    <div class="card">
+      <h3>Позиционирование в городе</h3>
+      <p>Родители приводят детей не «покататься час», а в систему, где есть тренер, разряд, соревнования и понятная траектория роста. Поэтому в рекламе акцент — не «скейтпарк», а <strong>«круглогодичные занятия для детей и подростков под руководством инструкторов федерации»</strong>.</p>
+    </div>
+
+    <div class="card">
+      <h3>Для кого</h3>
+      <ul class="clean">
+        <li><strong>Дети 5–12 лет</strong> — обучение с нуля, секции, дни рождения.</li>
+        <li><strong>Подростки</strong> — свободное катание, прогрессия, соревнования, своя тусовка.</li>
+        <li><strong>Спортсмены</strong> — тренировки через федерацию, сборы, старты.</li>
+        <li><strong>Семьи и компании</strong> — праздники, закрытая аренда, события.</li>
+      </ul>
+    </div>
+
+    <div class="card">
+      <h3>Почему это сработает в ХМАО</h3>
+      <ul class="clean">
+        <li><strong>Климат.</strong> Продолжительная холодная зима с минимумами до −62 °C и короткий световой день делают крытое помещение не альтернативой, а единственной возможностью круглогодичных занятий.</li>
+        <li><strong>Демография.</strong> Население Ханты-Мансийска выросло до ~113,4 тыс. человек (2024), рождаемость вдвое превышает смертность — устойчивый спрос на детский и семейный досуг.</li>
+        <li><strong>Тренд региона.</strong> Федерация скейтбординга и роллер-спорта в ХМАО аккредитована, интерес растёт: в Нягани скейтбордингом занимаются более 500 человек, в Когалыме роллер-спортом — более 400.</li>
+        <li><strong>Административный ресурс.</strong> Проект соответствует тренду на развитие экстремальных видов спорта в округе — можно претендовать на гранты, субсидии и льготную аренду муниципального помещения.</li>
+      </ul>
+    </div>
+
+    <div class="card">
+      <h3>Мировые бенчмарки, на которые опирается модель</h3>
+      <ul class="clean">
+        <li><strong>«Три бизнеса под одной крышей»:</strong> входная плата и абонементы, обучение и коучинг, розница и кафе. Входные билеты и абонементы обычно дают <strong>65–75% дохода</strong> и почти нулевую себестоимость.</li>
+        <li><strong>Праздники — сверхприбыльный поток:</strong> валовая маржа <strong>50–80%</strong>, в Москве праздник на 10 человек стоит 20 000–40 000 ₽ за 1–2 часа, в Европе базовые пакеты — от 150 до 390 €. Праздники добавляют <strong>20–30%</strong> к общей выручке.</li>
+        <li><strong>Масштаб как магнит:</strong> Adrenaline Alley (Великобритания, ~11 000 м²) стал тренировочной базой олимпийских спортсменов и площадкой крупных соревнований — это ориентир на будущее, а не на первый этап.</li>
+        <li><strong>Круглогодичность решает:</strong> бизнес-планы парков в холодных регионах (например, Вайоминг, США) прямо строятся на том, что крыша закрывает 7–9 месяцев «мёртвого» сезона.</li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- ================= УСЛУГИ ================= -->
+  <section id="services">
+    <h2><span class="num">02</span> Перечень услуг</h2>
+
+    <div class="card svc">
+      <div class="idx">1</div>
+      <div class="body">
+        <h3>Свободное катание <span class="tag">Этап 1</span></h3>
+        <p>Сеансы 1–2 часа, безлимит на день. Базовый поток и основа загрузки парка в вечерние часы и выходные.</p>
+      </div>
+    </div>
+
+    <div class="card svc">
+      <div class="idx">2</div>
+      <div class="body">
+        <h3>Прокат <span class="tag">Этап 1</span></h3>
+        <p>Ролики, скейты, самокаты, защита: шлем, наколенники, налокотники, защита кистей. Парк роликов и самокатов уже есть — докупить нужно детские размеры защиты и несколько запасных шлемов.</p>
+      </div>
+    </div>
+
+    <div class="card svc">
+      <div class="idx">3</div>
+      <div class="body">
+        <h3>Обучение <span class="tag">Этап 1</span></h3>
+        <p>Групповые занятия для детей по роликам, скейту и самокату, а также индивидуальные тренировки. Сильная сторона проекта за счёт инструкторов и федерации.</p>
+      </div>
+    </div>
+
+    <div class="card svc">
+      <div class="idx">4</div>
+      <div class="body">
+        <h3>Секции <span class="tag">Этап 1</span></h3>
+        <p>Регулярные группы по роликам и скейту, спортивная подготовка. Оформляются как секция при федерации — это даёт доверие родителей и выход на соревнования.</p>
+      </div>
+    </div>
+
+    <div class="card svc">
+      <div class="idx">5</div>
+      <div class="body">
+        <h3>Праздники <span class="tag warm">Высокая маржа</span></h3>
+        <p>День рождения «под ключ»: аренда зоны, инструктор-аниматор, прокат, готовый сценарий, отдельная зона для родителей. Отдельный поток в выходные дни.</p>
+      </div>
+    </div>
+
+    <div class="card svc">
+      <div class="idx">6</div>
+      <div class="body">
+        <h3>Аренда парка <span class="tag">Этап 1</span></h3>
+        <p>Закрытая аренда для групп, школ, дней рождения и съёмок. Главный инструмент заполнения «низких» часов — дневного времени в будни.</p>
+      </div>
+    </div>
+
+    <div class="card svc">
+      <div class="idx">7</div>
+      <div class="body">
+        <h3>События <span class="tag">Этап 1</span></h3>
+        <p>Мастер-классы, мини-соревнования, показательные выступления. Работают как инструмент маркетинга и удержания сообщества вокруг парка.</p>
+      </div>
+    </div>
+
+    <div class="card svc">
+      <div class="idx">8</div>
+      <div class="body">
+        <h3>Летний формат <span class="tag">Этап 1</span></h3>
+        <p>Интенсив или дневной лагерь на базе парка. Загрузка в каникулы, когда уличные площадки доступны, но родителям нужен присмотр за детьми.</p>
+      </div>
+    </div>
+
+    <div class="card svc">
+      <div class="idx">9</div>
+      <div class="body">
+        <h3>Кафе и розница <span class="tag later">Не на старте</span></h3>
+        <p>На первом этапе — минимально: кулер, снеки, небольшая витрина с защитой и расходниками. Полноценное кафе и pro-shop — следующий этап, чтобы не усложнять помещение и персонал.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= ЗАПУСК ================= -->
+  <section id="launch">
+    <h2><span class="num">03</span> Что нужно для открытия</h2>
+    <p class="muted small" style="margin:-4px 0 12px">Нажмите на шаг, чтобы раскрыть детали.</p>
+
+    <details class="step" open>
+      <summary><span class="idx">1</span> Юридическая база <span class="chev">+</span></summary>
+      <div class="inner">
+        <ul class="clean">
+          <li>Регистрация <strong>ИП</strong> (проще для старта) или ООО.</li>
+          <li>Коды ОКВЭД: <strong>93.19</strong> — деятельность в области спорта прочая; <strong>85.41</strong> — дополнительное образование детей; <strong>47.64</strong> — розничная торговля спортивным инвентарём (если планируются продажи).</li>
+          <li>Если секции идут через федерацию — согласовать схему: парк как коммерческая площадка, секция как структурное подразделение федерации.</li>
+          <li>Пакет документов: договор аренды, заключения пожарной инспекции, программа производственного контроля (Роспотребнадзор), медицинский кабинет или договор на медицинское сопровождение.</li>
+        </ul>
+      </div>
+    </details>
+
+    <details class="step">
+      <summary><span class="idx">2</span> Помещение — главный ограничитель бюджета <span class="chev">+</span></summary>
+      <div class="inner">
+        <p>Ищем нежилое помещение <strong>250–300 м²</strong> (оптимально 300 м²) со следующими параметрами:</p>
+        <ul class="clean">
+          <li><strong>Высота потолков не менее 4 м</strong> — для рамп и безопасных траекторий.</li>
+          <li>Отдельный вход и возможность организовать зону ресепшн и ожидания.</li>
+          <li><strong>Работающая или восстанавливаемая вентиляция</strong> — критично для крытого катания.</li>
+          <li>Пожарные требования: не менее двух эвакуационных выходов, план эвакуации, огнетушители.</li>
+          <li>Возможность разместить раздевалку, санузел и зону хранения проката.</li>
+          <li>Желательно не в жилом доме и не в центре с высокой арендой — подойдут промзоны, цокольные этажи коммерческих зданий, окраины.</li>
+        </ul>
+        <p class="muted">Ориентир по аренде в Ханты-Мансийске: от <strong>~900–1 000 ₽/м² в месяц</strong> в менее центральных локациях до <strong>2 000 ₽/м² и выше</strong> в центре. Для 300 м² реалистичный диапазон — <strong>270 000–450 000 ₽/мес.</strong>, депозит обычно 2–3 месяца.</p>
+      </div>
+    </details>
+
+    <details class="step">
+      <summary><span class="idx">3</span> Подготовка помещения <span class="chev">+</span></summary>
+      <div class="inner">
+        <ul class="clean">
+          <li>Ремонт «под парк»: усиление полов под нагрузку от рамп, нескользящее покрытие в зонах катания, разметка, яркое освещение без слепящих точек.</li>
+          <li><strong>Вентиляция и отопление</strong> — отдельная статья, которую нельзя игнорировать в климате Ханты-Мансийска.</li>
+          <li>Зонирование: зона катания, зона проката и выдачи защиты, раздевалки, ресепшн, зона ожидания для родителей, административный уголок.</li>
+        </ul>
+      </div>
+    </details>
+
+    <details class="step">
+      <summary><span class="idx">4</span> Монтаж оборудования <span class="chev">+</span></summary>
+      <div class="inner">
+        <p>Рампы, горки, ролики, самокаты и защита уже есть — это позволяет не тратить 2–5 млн ₽ на новое оборудование. Что нужно предусмотреть:</p>
+        <ul class="clean">
+          <li>Монтаж и <strong>обязательную проверку креплений и покрытия</strong>.</li>
+          <li>Докупку недостающего: детские размеры защиты, несколько запасных шлемов, крепёж, расходники.</li>
+          <li>При необходимости — одну–две позиции модульного оборудования под конкретную планировку (например, грайнд-бокс или небольшой квотер), но только после обмеров помещения.</li>
+        </ul>
+      </div>
+    </details>
+
+    <details class="step">
+      <summary><span class="idx">5</span> Персонал <span class="chev">+</span></summary>
+      <div class="inner">
+        <ul class="clean">
+          <li><strong>Администратор</strong> — ресепшн, продажи, расписание, праздники.</li>
+          <li><strong>Инструкторы</strong> — из вашего штата; на старте достаточно 2–3 человек с посменной загрузкой.</li>
+          <li><strong>Уборщица / техник</strong> — на аутсорсе или по совмещению.</li>
+          <li>Медицинское сопровождение — договор с медучреждением или дежурство в часы работы.</li>
+        </ul>
+      </div>
+    </details>
+
+    <details class="step">
+      <summary><span class="idx">6</span> Разрешения и безопасность <span class="chev">+</span></summary>
+      <div class="inner">
+        <ul class="clean">
+          <li>Пожарная безопасность: схемы эвакуации, огнетушители, обучение персонала.</li>
+          <li>Роспотребнадзор: программа производственного контроля, договор на вывоз мусора, требования к воде и санузлам.</li>
+          <li><strong>Правила посещения:</strong> обязательная защита (шлем, наколенники, налокотники, защита кистей), ограничения по возрасту без сопровождения взрослых, инструктаж перед сеансом.</li>
+          <li>Страхование ответственности перед третьими лицами — желательно уже на старте, чтобы закрыть риски травм.</li>
+        </ul>
+      </div>
+    </details>
+
+    <details class="step">
+      <summary><span class="idx">7</span> Маркетинг первого месяца <span class="chev">+</span></summary>
+      <div class="inner">
+        <ul class="clean">
+          <li>Соцсети и геосервисы: карточка парка, расписание, цены, фото оборудования.</li>
+          <li><strong>Партнёрство со школами:</strong> пробные уроки и экскурсии.</li>
+          <li><strong>День открытых дверей</strong> с бесплатными мини-сессиями и записью в секции.</li>
+          <li>Акцент в рекламе — не «скейтпарк», а «круглогодичные занятия для детей и подростков под руководством инструкторов федерации».</li>
+        </ul>
+      </div>
+    </details>
+  </section>
+
+  <!-- ================= БЮДЖЕТ ================= -->
+  <section id="budget">
+    <h2><span class="num">04</span> Стартовый бюджет</h2>
+    <div class="card">
+      <p class="muted small" style="margin-bottom:4px">Помещение 250–300 м². Оборудование уже куплено и в смету не входит. Полоса на графике показывает положение статьи в диапазоне до 1,2 млн ₽.</p>
+
+      <div class="item">
+        <div class="item-head"><span class="item-name">Аренда: депозит (2–3 мес.)</span><span class="item-val">550 000 – 1 200 000 ₽</span></div>
+        <div class="bar"><div class="fill" style="left:45.8%;width:54.2%"></div></div>
+        <p class="note">При ставке ~900–1 500 ₽/м² и площади 300 м². Самая тяжёлая статья старта — торгуйтесь о рассрочке депозита.</p>
+      </div>
+
+      <div class="item">
+        <div class="item-head"><span class="item-name">Ремонт, полы, освещение</span><span class="item-val">300 000 – 700 000 ₽</span></div>
+        <div class="bar"><div class="fill" style="left:25%;width:33.3%"></div></div>
+        <p class="note">Без капитальной перестройки: усиление полов и нескользящее покрытие в зоне катания.</p>
+      </div>
+
+      <div class="item">
+        <div class="item-head"><span class="item-name">Вентиляция / отопление (доналадка)</span><span class="item-val">150 000 – 400 000 ₽</span></div>
+        <div class="bar"><div class="fill" style="left:12.5%;width:20.8%"></div></div>
+        <p class="note">Если система есть, но требует восстановления. Помещение с готовой вентиляцией экономит до 250 тыс ₽.</p>
+      </div>
+
+      <div class="item">
+        <div class="item-head"><span class="item-name">Монтаж и адаптация оборудования</span><span class="item-val">150 000 – 300 000 ₽</span></div>
+        <div class="bar"><div class="fill" style="left:12.5%;width:12.5%"></div></div>
+        <p class="note">Ваши рампы плюс докупка крепежа, детских размеров защиты и расходников.</p>
+      </div>
+
+      <div class="item">
+        <div class="item-head"><span class="item-name">Мебель, ресепшн, касса, стеллажи</span><span class="item-val">100 000 – 200 000 ₽</span></div>
+        <div class="bar"><div class="fill" style="left:8.3%;width:8.3%"></div></div>
+        <p class="note">Минимальный набор, без излишеств.</p>
+      </div>
+
+      <div class="item">
+        <div class="item-head"><span class="item-name">Регистрация, разрешения, пожарная безопасность</span><span class="item-val">50 000 – 120 000 ₽</span></div>
+        <div class="bar"><div class="fill" style="left:4.2%;width:5.8%"></div></div>
+        <p class="note">ИП/ООО, пожарные мероприятия, договор на медицинское сопровождение.</p>
+      </div>
+
+      <div class="item">
+        <div class="item-head"><span class="item-name">Маркетинг на запуск</span><span class="item-val">100 000 – 200 000 ₽</span></div>
+        <div class="bar"><div class="fill" style="left:8.3%;width:8.3%"></div></div>
+        <p class="note">Соцсети, полиграфия, день открытых дверей.</p>
+      </div>
+
+      <div class="item">
+        <div class="item-head"><span class="item-name">Резерв на непредвиденное</span><span class="item-val">150 000 – 300 000 ₽</span></div>
+        <div class="bar"><div class="fill" style="left:12.5%;width:12.5%"></div></div>
+        <p class="note">Обязательная строка для первого этапа.</p>
+      </div>
+    </div>
+
+    <div class="total">
+      <div class="row"><span>Итого стартовые вложения</span><span class="sum">1 550 000 – 3 420 000 ₽</span></div>
+      <p class="note" style="margin-top:8px">Если найдётся помещение с готовой вентиляцией и полами в промзоне по ставке ближе к 900 ₽/м² — бюджет смещается к нижней границе. Если помещение требует серьёзной вентиляции и ремонта полов — к верхней.</p>
+    </div>
+  </section>
+
+  <!-- ================= ОПЕРАЦИОНКА ================= -->
+  <section id="opex">
+    <h2><span class="num">05</span> Операционные расходы</h2>
+    <div class="card">
+      <p class="muted small" style="margin-bottom:4px">В месяц. Полоса показывает положение статьи в диапазоне до 450 тыс ₽.</p>
+
+      <div class="item">
+        <div class="item-head"><span class="item-name">Аренда</span><span class="item-val">270 000 – 450 000 ₽</span></div>
+        <div class="bar"><div class="fill" style="left:60%;width:40%"></div></div>
+      </div>
+
+      <div class="item">
+        <div class="item-head"><span class="item-name">ФОТ (администратор + 2–3 инструктора)</span><span class="item-val">180 000 – 300 000 ₽</span></div>
+        <div class="bar"><div class="fill" style="left:40%;width:26.7%"></div></div>
+        <p class="note">Частичная занятость инструкторов на старте.</p>
+      </div>
+
+      <div class="item">
+        <div class="item-head"><span class="item-name">Коммунальные (отопление, электричество, вода)</span><span class="item-val">60 000 – 120 000 ₽</span></div>
+        <div class="bar"><div class="fill" style="left:13.3%;width:13.3%"></div></div>
+      </div>
+
+      <div class="item">
+        <div class="item-head"><span class="item-name">Маркетинг и расходники</span><span class="item-val">30 000 – 60 000 ₽</span></div>
+        <div class="bar"><div class="fill" style="left:6.7%;width:6.7%"></div></div>
+      </div>
+    </div>
+
+    <div class="total">
+      <div class="row"><span>Итого в месяц</span><span class="sum">540 000 – 930 000 ₽</span></div>
+      <p class="note" style="margin-top:8px">Первые 3–6 месяцев возможен режим «в минус» или около нуля — это нормально для нового места при наличии резерва.</p>
+    </div>
+  </section>
+
+  <!-- ================= ВЫРУЧКА ================= -->
+  <section id="revenue">
+    <h2><span class="num">06</span> Выручка и сценарии</h2>
+
+    <div class="card">
+      <h3>Сценарии загрузки</h3>
+
+      <div class="scn pess">
+        <div class="title">Пессимистичный</div>
+        <dl>
+          <dt>Посещений в день</dt><dd>30</dd>
+          <dt>Средний чек</dt><dd>500 ₽</dd>
+          <dt>Выручка в месяц</dt><dd>450 000 ₽</dd>
+          <dt>Расходы в месяц</dt><dd>~650 000 ₽</dd>
+          <dt>Результат</dt><dd class="res-neg">−200 000 ₽</dd>
+        </dl>
+      </div>
+
+      <div class="scn base">
+        <div class="title">Базовый</div>
+        <dl>
+          <dt>Посещений в день</dt><dd>45</dd>
+          <dt>Средний чек</dt><dd>600 ₽</dd>
+          <dt>Выручка в месяц</dt><dd>810 000 ₽</dd>
+          <dt>Расходы в месяц</dt><dd>~700 000 ₽</dd>
+          <dt>Результат</dt><dd class="res-pos">+110 000 ₽</dd>
+        </dl>
+      </div>
+
+      <div class="scn opt">
+        <div class="title">Оптимистичный</div>
+        <dl>
+          <dt>Посещений в день</dt><dd>60</dd>
+          <dt>Средний чек</dt><dd>700 ₽</dd>
+          <dt>Выручка в месяц</dt><dd>1 260 000 ₽</dd>
+          <dt>Расходы в месяц</dt><dd>~800 000 ₽</dd>
+          <dt>Результат</dt><dd class="res-pos">+460 000 ₽</dd>
+        </dl>
+      </div>
+
+      <p class="note" style="margin-top:12px">Расчёт по 30 дням и только по посещениям. Праздники (4–8 в месяц) и секции добавляют к базовому сценарию <strong>+20–30%</strong> выручки — именно они выводят проект в устойчивый плюс.</p>
+    </div>
+
+    <div class="card">
+      <h3>Как читать цифры</h3>
+      <ul class="clean">
+        <li><strong>Точка безубыточности</strong> — примерно 540–930 тыс ₽/мес в зависимости от ставки аренды; при базовой аренде ориентир — <strong>~700 тыс ₽/мес</strong>.</li>
+        <li><strong>Ведите раздельный учёт</strong> по трём потокам: вход/абонементы, обучение и секции, праздники и аренда. Мировая практика показывает, что смешивание потоков скрывает убыточные направления.</li>
+        <li><strong>Праздники — приоритет №1 по марже:</strong> 50–80% валовой маржи против 25–30% в рознице.</li>
+        <li><strong>«Низкие» часы</strong> (будни днём) закрывайте закрытой арендой для школ и групп — это дешёвый способ поднять загрузку без рекламы.</li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- ================= РИСКИ ================= -->
+  <section id="risks">
+    <h2><span class="num">07</span> Риски и что делать</h2>
+
+    <div class="card">
+      <h3>1. Прямой конкурент — «СпортЗавод»</h3>
+      <p>В городе уже работает крытый скейтпарк на базе культурно-спортивного кластера. <strong>Что делать:</strong> до старта изучить его цены, загрузку и ассортимент услуг; отстроиться за счёт федерации, тренерского состава, секций и формата праздников «под ключ».</p>
+    </div>
+
+    <div class="card">
+      <h3>2. Аренда и коммунальные платежи</h3>
+      <p>Ставки в городе — от ~900–1 000 до 2 000+ ₽/м² в месяц, плюс отопление в суровом климате. <strong>Что делать:</strong> искать промзоны и цокольные этажи, торговаться о рассрочке депозита, претендовать на льготную муниципальную аренду.</p>
+    </div>
+
+    <div class="card">
+      <h3>3. Ограниченный размер рынка</h3>
+      <p>Население ~113 тыс. человек — небольшая база для масштабного проекта. <strong>Что делать:</strong> точно рассчитать пропускную способность и цены, ориентироваться также на соседние города (в Нягани спрос уже сформирован), не раздувать площадь на старте.</p>
+    </div>
+
+    <div class="card">
+      <h3>4. Сезонность внутри года</h3>
+      <p>Пик спроса — осень–зима–весна; летом открываются уличные площадки. <strong>Что делать:</strong> закладывать летние интенсивы и дневной лагерь, активнее продавать закрытую аренду и праздники.</p>
+    </div>
+
+    <div class="card">
+      <h3>5. Безопасность и операционная сложность</h3>
+      <p>Страхование — существенная статья расходов, плюс нужен контроль экипировки и инструктаж. <strong>Что делать:</strong> жёсткие правила посещения, страхование ответственности с первого дня, обучение персонала, медицинское сопровождение.</p>
+    </div>
+  </section>
+
+  <!-- ================= РАСШИРЕНИЕ ================= -->
+  <section id="growth">
+    <h2><span class="num">08</span> Расширение без перестройки</h2>
+
+    <div class="card">
+      <ul class="clean">
+        <li><strong>Зонирование с запасом.</strong> Уже на 300 м² закладывается зона, которую позже можно отдать под памп-трек, скалодром или верёвочный элемент.</li>
+        <li><strong>Модульное оборудование.</strong> Оборудование из Нягани используется как ядро, новые элементы добавляются по мере загрузки — без остановки работы парка.</li>
+        <li><strong>Праздники как отдельный продукт.</strong> Сразу проектируется зона для стола/кафе и место для родителей, чтобы в будущем добавить полноценное кафе без перепланировки.</li>
+        <li><strong>Секции и федерация — точка роста.</strong> Соревнования и сборы потребуют расширения зрительской зоны и раздевалок — это следующий этап после выхода на стабильную загрузку.</li>
+        <li><strong>Гибкие форматы.</strong> Днём, когда дети в школе, — сеансы для взрослых или сдача части парка в аренду для тренировок.</li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- ================= ЧЕК-ЛИСТ ================= -->
+  <section id="next">
+    <h2><span class="num">09</span> Ближайшие шаги</h2>
+    <div class="card" id="checklist">
+      <label class="check"><input type="checkbox" data-key="c1"><span>Провести анализ конкурента «СпортЗавод»: цены, загрузка, услуги</span></label>
+      <label class="check"><input type="checkbox" data-key="c2"><span>Найти 2–3 помещения 250–300 м² с потолками ≥ 4 м и вентиляцией</span></label>
+      <label class="check"><input type="checkbox" data-key="c3"><span>Уточнить ставку аренды, депозит и условия рассрочки</span></label>
+      <label class="check"><input type="checkbox" data-key="c4"><span>Согласовать с федерацией схему работы секций на базе парка</span></label>
+      <label class="check"><input type="checkbox" data-key="c5"><span>Собрать смету ремонта по конкретному помещению после осмотра</span></label>
+      <label class="check"><input type="checkbox" data-key="c6"><span>Зарегистрировать ИП/ООО и подобрать ОКВЭД</span></label>
+      <label class="check"><input type="checkbox" data-key="c7"><span>Проработать праздничные пакеты и цены (3 тарифа)</span></label>
+      <label class="check"><input type="checkbox" data-key="c8"><span>Запросить в департаменте спорта ХМАО информацию о грантах и льготной аренде</span></label>
+      <label class="check"><input type="checkbox" data-key="c9"><span>Оформить страхование ответственности перед третьими лицами</span></label>
+      <label class="check"><input type="checkbox" data-key="c10"><span>Подготовить финансовую модель на 12 месяцев с графиком платежей</span></label>
+    </div>
+  </section>
+
+  <footer>
+    <p><strong>ЛЕДОКОЛ</strong> · дашборд проекта крытого экстрим-парка в Ханты-Мансийске · этап 1 (компактный старт с возможностью расширения).</p>
+    <p>Все суммы — ориентировочные диапазоны для планирования, а не коммерческое предложение. Аренда, ремонт и коммунальные расходы требуют уточнения по конкретному помещению. Отметки в чек-листе и выбранная тема сохраняются в этом браузере.</p>
+  </footer>
+</main>
+
+<script>
+(function(){
+  // Тема
+  var root = document.documentElement;
+  var btn = document.getElementById('themeBtn');
+  var savedTheme = localStorage.getItem('ledokol-theme');
+  if (savedTheme) root.setAttribute('data-theme', savedTheme);
+  btn.addEventListener('click', function(){
+    var next = root.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+    root.setAttribute('data-theme', next);
+    localStorage.setItem('ledokol-theme', next);
+  });
+
+  // Активный раздел в меню
+  var links = Array.prototype.slice.call(document.querySelectorAll('nav.tabs a'));
+  var sections = links.map(function(a){ return document.querySelector(a.getAttribute('href')); });
+  if ('IntersectionObserver' in window) {
+    var io = new IntersectionObserver(function(entries){
+      entries.forEach(function(e){
+        if (e.isIntersecting) {
+          links.forEach(function(l){ l.classList.toggle('active', l.getAttribute('href') === '#' + e.target.id); });
+        }
+      });
+    }, { rootMargin: '-70px 0px -65% 0px', threshold: 0 });
+    sections.forEach(function(s){ if (s) io.observe(s); });
+  }
+
+  // Чек-лист
+  var boxes = document.querySelectorAll('#checklist input[type="checkbox"]');
+  Array.prototype.forEach.call(boxes, function(box){
+    var key = 'ledokol-' + box.dataset.key;
+    if (localStorage.getItem(key) === '1') box.checked = true;
+    box.addEventListener('change', function(){
+      localStorage.setItem(key, box.checked ? '1' : '0');
+    });
+  });
+})();
+</script>
+</body>
+</html>
